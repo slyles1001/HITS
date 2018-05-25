@@ -6,14 +6,19 @@ https://en.wikipedia.org/wiki/HITS_algorithm """
 
 function HITS(g::AbstractGraph, mx=100::Integer, tol=1e-6)
 	N = Int(nv(g))
-	a0 = fill(0, N)
+	a0 = fill(1. / N, N)
 	h0 = fill(1. / N, N)
 	ag = adjacency_matrix(g)
+	ga = ag'
+	ata = *(ga, ag)
+	aat = *(ag, ga)
 	for _ in 1:mx
-		auth = *(ag', h0)
-		auth = normalize(auth)
-		hubs = *(ag, auth)
-		hubs = normalize(hubs)
+		#auth = *(ag', h0)
+		#auth = normalize(auth)
+		#hubs = *(ag, auth)
+		#hubs = normalize(hubs)
+		auth = *(aat, a0)
+		hubs = *(ata, h0)
 		if (sum(abs.(-(hubs, h0))) <= tol)
 			return hubs, auth
 		end
